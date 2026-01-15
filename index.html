@@ -30,14 +30,26 @@
 
     <h2 style="margin: 14px 0 8px;">第三方追踪器 iframe</h2>
     <iframe id="tracker"></iframe>
+    <div class="hint" style="margin-top:12px;">
+      <p><b>站点B收到的第三方回传结果（postMessage）</b></p>
+      <pre id="tpResult" style="white-space:pre-wrap;word-break:break-word;margin:0;">等待第三方回传…</pre>
+    </div>
 
     <script>
       document.getElementById("origin").textContent = location.origin;
       document.getElementById("ua").textContent = navigator.userAgent.slice(0, 160) + (navigator.userAgent.length > 160 ? "…" : "");
 
       // Third-party origin (different from this GitHub Pages origin)
-      const TRACKER_URL = "https://raw.githack.com/1karess/webview-thirdparty-tracker/main/tracker.html";
+      // auto=read: when C is loaded under B, it reads its own LS/Cookie/IDB.
+      const TRACKER_URL = "https://raw.githack.com/1karess/webview-thirdparty-tracker/main/tracker.html?auto=read";
       document.getElementById("tracker").src = TRACKER_URL;
+
+      // Listen for C -> B results
+      window.addEventListener("message", (ev) => {
+        const d = ev?.data;
+        if (!d || d.type !== "tp_storage_result") return;
+        document.getElementById("tpResult").textContent = JSON.stringify(d, null, 2);
+      });
 
       // First-party cookie/localStorage test (IMPORTANT!)
       const FP_COOKIE = "fp_id";
