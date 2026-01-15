@@ -22,6 +22,10 @@
         本页 Origin：<code id="origin"></code><br />
         UA：<code id="ua"></code>
       </p>
+      <p>
+        第一方 Cookie（本页域名）：<code id="fpCookie">(none)</code><br />
+        第一方 localStorage：<code id="fpLs">(none)</code>
+      </p>
     </div>
 
     <h2 style="margin: 14px 0 8px;">第三方追踪器 iframe</h2>
@@ -34,6 +38,29 @@
       // Third-party origin (different from this GitHub Pages origin)
       const TRACKER_URL = "https://raw.githack.com/1karess/webview-thirdparty-tracker/main/tracker.html";
       document.getElementById("tracker").src = TRACKER_URL;
+
+      // First-party cookie/localStorage test (IMPORTANT!)
+      const FP_COOKIE = "fp_id";
+      const FP_LS = "fp_ls";
+      function getCookie(name) {
+        const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        return match ? decodeURIComponent(match[2]) : null;
+      }
+      function ensureFirstParty() {
+        let c = getCookie(FP_COOKIE);
+        if (!c) {
+          c = "FP_B_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+          document.cookie = `${FP_COOKIE}=${encodeURIComponent(c)}; Max-Age=2592000; Path=/; SameSite=Lax`;
+        }
+        let ls = localStorage.getItem(FP_LS);
+        if (!ls) {
+          ls = "FP_B_LS_" + Date.now();
+          localStorage.setItem(FP_LS, ls);
+        }
+        document.getElementById("fpCookie").textContent = c || "(none)";
+        document.getElementById("fpLs").textContent = ls || "(none)";
+      }
+      ensureFirstParty();
     </script>
   </body>
 </html>
