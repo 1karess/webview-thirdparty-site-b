@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Site B (Shop) - Third-party iframe test</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 16px; line-height: 1.5; }
+      .hint { background: #f6f8fa; border: 1px solid #e5e7eb; padding: 12px; border-radius: 12px; }
+      iframe { width: 100%; height: 420px; border: 3px solid #ff4d5a; border-radius: 12px; }
+      code { background: #f6f8fa; padding: 2px 6px; border-radius: 6px; }
+    </style>
+  </head>
+  <body>
+    <h1>站点 B（模拟：购物站）</h1>
+    <div class="hint">
+      <p>
+        红框是 <b>第三方</b> tracker iframe。请在 iframe 里点“读取 ID”：如果读到站点 A 写入的同一个值，
+        说明第三方存储可能跨站点/跨 App 共享；否则说明隔离/分区/阻止。
+      </p>
+      <p>
+        本页 Origin：<code id="origin"></code><br />
+        UA：<code id="ua"></code>
+      </p>
+    </div>
+
+    <h2 style="margin: 14px 0 8px;">第三方追踪器 iframe</h2>
+    <iframe id="tracker"></iframe>
+
+    <script>
+      document.getElementById("origin").textContent = location.origin;
+      document.getElementById("ua").textContent = navigator.userAgent.slice(0, 160) + (navigator.userAgent.length > 160 ? "…" : "");
+
+      // Third-party origin (different from this GitHub Pages origin)
+      const TRACKER_URL = "https://raw.githack.com/1karess/webview-thirdparty-tracker/main/tracker.html";
+      document.getElementById("tracker").src = TRACKER_URL;
+    </script>
+  </body>
+</html>
